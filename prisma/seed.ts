@@ -1,3 +1,4 @@
+import { hash } from 'bcryptjs';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
@@ -12,6 +13,15 @@ async function main() {
     },
   });
 
+  const editorRole = await prisma.role.upsert({
+    where: { name: 'EDITOR' },
+    update: { description: 'Editor con permisos de gestión de contenido y productos' },
+    create: {
+      name: 'EDITOR',
+      description: 'Editor con permisos de gestión de contenido y productos',
+    },
+  });
+
   await prisma.role.upsert({
     where: { name: 'CUSTOMER' },
     update: { description: 'Cliente final' },
@@ -21,18 +31,38 @@ async function main() {
     },
   });
 
+  const defaultAdminPassword = process.env.SEED_ADMIN_PASSWORD ?? 'Admin1234!';
+  const defaultEditorPassword = process.env.SEED_EDITOR_PASSWORD ?? 'Editor1234!';
+
   await prisma.user.upsert({
     where: { email: 'admin@gabygas.com' },
     update: {
       fullName: 'Administrador GabyGas',
       roleId: adminRole.id,
+      passwordHash: await hash(defaultAdminPassword, 12),
     },
     create: {
       fullName: 'Administrador GabyGas',
       email: 'admin@gabygas.com',
-      passwordHash: 'change-this-password-hash',
+      passwordHash: await hash(defaultAdminPassword, 12),
       phone: '+57 3000000000',
       roleId: adminRole.id,
+    },
+  });
+
+  await prisma.user.upsert({
+    where: { email: 'editor@gabygas.com' },
+    update: {
+      fullName: 'Editor GabyGas',
+      roleId: editorRole.id,
+      passwordHash: await hash(defaultEditorPassword, 12),
+    },
+    create: {
+      fullName: 'Editor GabyGas',
+      email: 'editor@gabygas.com',
+      passwordHash: await hash(defaultEditorPassword, 12),
+      phone: '+57 3010000001',
+      roleId: editorRole.id,
     },
   });
 

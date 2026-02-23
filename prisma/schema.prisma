@@ -197,6 +197,18 @@ model Banner {
   updatedAt      DateTime @updatedAt
 }
 
+model AuditLog {
+  id         String   @id @default(cuid())
+  actorId    String?
+  actorEmail String?
+  action     String
+  entity     String
+  entityId   String?
+  before     Json?
+  after      Json?
+  createdAt  DateTime @default(now())
+}
+
 model Page {
   id             String   @id @default(cuid())
   key            String   @unique
