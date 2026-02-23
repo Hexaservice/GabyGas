@@ -1,5 +1,6 @@
 import { Prisma, SiteSettings } from '@prisma/client';
 import { prisma } from '@/lib/prisma';
+import { AuditActor, createAuditLog } from '@/lib/audit';
 
 const SITE_SETTINGS_ID = 1;
 
@@ -23,15 +24,40 @@ export async function upsertSiteSettings(
   });
 }
 
-export async function updateBrandChannels(payload: {
-  supportPhone?: string | null;
-  salesPhone?: string | null;
-  whatsappNumber?: string | null;
-  logoUrl?: string | null;
-  facebookUrl?: string | null;
-  instagramUrl?: string | null;
-  tiktokUrl?: string | null;
-  youtubeUrl?: string | null;
-}): Promise<SiteSettings> {
-  return upsertSiteSettings(payload);
+export async function updateBrandChannels(
+  payload: {
+    supportPhone?: string | null;
+    salesPhone?: string | null;
+    whatsappNumber?: string | null;
+    logoUrl?: string | null;
+    facebookUrl?: string | null;
+    instagramUrl?: string | null;
+    tiktokUrl?: string | null;
+    youtubeUrl?: string | null;
+  },
+  actor?: AuditActor,
+): Promise<SiteSettings> {
+  const before = await getSiteSettings();
+  const updated = await upsertSiteSettings(payload);
+
+  await createAuditLog({
+    actor,
+    action: 'update_brand_channels',
+    entity: 'site_settings',
+    entityId: String(SITE_SETTINGS_ID),
+    before: before
+      ? {
+          supportPhone: before.supportPhone,
+          salesPhone: before.salesPhone,
+          whatsappNumber: before.whatsappNumber,
+        }
+      : null,
+    after: {
+      supportPhone: updated.supportPhone,
+      salesPhone: updated.salesPhone,
+      whatsappNumber: updated.whatsappNumber,
+    },
+  });
+
+  return updated;
 }
