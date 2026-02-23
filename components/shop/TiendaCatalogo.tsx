@@ -1,5 +1,6 @@
 'use client';
 
+import Link from 'next/link';
 import { useMemo, useState } from 'react';
 
 type Product = {
@@ -46,7 +47,7 @@ export function TiendaCatalogo({ products, services, categories, brands }: Props
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ productId, quantity: 1 }),
     });
-    setLeadMessage('Producto agregado al carrito. Continúa en checkout.');
+    setLeadMessage('Producto agregado al carrito. Ahora puedes revisar el checkout.');
   }
 
   async function submitLead(formData: FormData) {
@@ -63,10 +64,20 @@ export function TiendaCatalogo({ products, services, categories, brands }: Props
 
   return (
     <section className="space-y-5">
-      <h1 className="h1">Tienda</h1>
-      <p className="body-copy">Filtra por categoría, marca o tipo y compra online o solicita instalación/mantenimiento.</p>
+      <div className="card surface-glow space-y-3">
+        <h1 className="h1">Tienda y catálogo GabyGas</h1>
+        <p className="body-copy">Filtra por categoría, marca o tipo y compra online o solicita instalación/mantenimiento.</p>
+        <div className="flex flex-wrap gap-3">
+          <Link href="/checkout" className="btn-primary">
+            Ir al carrito / checkout
+          </Link>
+          <Link href="/servicios" className="btn-outline">
+            Ver servicios
+          </Link>
+        </div>
+      </div>
 
-      <div className="grid gap-3 rounded-xl border border-slate-200 bg-white p-4 md:grid-cols-3">
+      <div className="grid gap-3 rounded-xl border border-slate-700 bg-slate-900/70 p-4 md:grid-cols-3">
         <select className="field" value={type} onChange={(e) => setType(e.target.value as 'todos' | 'producto' | 'servicio')}>
           <option value="todos">Todos</option>
           <option value="producto">Productos</option>
@@ -95,11 +106,11 @@ export function TiendaCatalogo({ products, services, categories, brands }: Props
           <h2 className="h2">Productos</h2>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {filteredProducts.map((product) => (
-              <article key={product.id} className="card space-y-2">
-                <h3 className="text-lg font-semibold">{product.name}</h3>
-                <p className="text-sm text-slate-600">{product.description}</p>
-                <p className="text-xs text-slate-500">Categoría: {product.category} · Marca: {product.brand ?? 'Sin marca'}</p>
-                <p className="font-semibold text-brand-700">${product.price.toLocaleString('es-CO')}</p>
+              <article key={product.id} className="card hover-lift space-y-2">
+                <h3 className="text-lg font-semibold text-brand-100">{product.name}</h3>
+                <p className="text-sm text-slate-300">{product.description}</p>
+                <p className="text-xs text-slate-400">Categoría: {product.category} · Marca: {product.brand ?? 'Sin marca'}</p>
+                <p className="font-semibold text-brand-300">${product.price.toLocaleString('es-CO')}</p>
                 <button className="btn-primary w-full" onClick={() => addToCart(product.id)} disabled={product.stock <= 0}>
                   {product.stock > 0 ? 'Agregar al carrito' : 'Sin stock'}
                 </button>
@@ -114,9 +125,9 @@ export function TiendaCatalogo({ products, services, categories, brands }: Props
           <h2 className="h2">Servicios</h2>
           <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
             {services.map((service) => (
-              <article key={service.id} className="card">
-                <h3 className="text-lg font-semibold">{service.name}</h3>
-                <p className="text-sm text-slate-600">{service.shortDescription}</p>
+              <article key={service.id} className="card hover-lift">
+                <h3 className="text-lg font-semibold text-brand-100">{service.name}</h3>
+                <p className="text-sm text-slate-300">{service.shortDescription}</p>
               </article>
             ))}
           </div>
@@ -141,7 +152,7 @@ export function TiendaCatalogo({ products, services, categories, brands }: Props
         <button className="btn-outline" type="submit">
           Enviar solicitud
         </button>
-        {leadMessage && <p className="text-sm text-brand-700">{leadMessage}</p>}
+        {leadMessage && <p className="text-sm text-brand-200">{leadMessage}</p>}
       </form>
     </section>
   );
