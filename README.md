@@ -91,6 +91,20 @@ NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION="codigo-search-console"
 ```
 
 
+## Publicación en GitHub Pages
+
+Este repositorio ahora incluye un workflow en `.github/workflows/deploy-github-pages.yml` que publica la carpeta estática `docs-site/` en GitHub Pages.
+
+Pasos para activarlo:
+
+1. Ve a **Settings → Pages** en GitHub.
+2. En **Build and deployment**, selecciona **Source: GitHub Actions**.
+3. Haz push a `main` (o ejecuta manualmente el workflow "Deploy GitHub Pages (sitio estático)").
+4. Espera a que el job termine y abre la URL de Pages.
+
+> Importante: GitHub Pages solo sirve contenido estático.
+> La app completa (Next.js + NextAuth + Prisma + APIs) necesita servidor Node.js y base de datos, por lo que para producción completa se recomienda Vercel/Render/Railway.
+
 ## Gobernanza de entrega
 
 - Convención de ramas: `feature/*`.
