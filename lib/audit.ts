@@ -8,7 +8,7 @@ export type AuditActor = {
 export async function createAuditLog(params: {
   actor?: AuditActor;
   action: string;
-  entity: 'site_settings' | 'banner' | 'product';
+  entity: 'site_settings' | 'banner' | 'product' | 'search';
   entityId?: string;
   before?: unknown;
   after?: unknown;
