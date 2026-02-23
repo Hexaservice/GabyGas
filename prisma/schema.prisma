@@ -1,0 +1,211 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum OrderStatus {
+  PENDING
+  CONFIRMED
+  DELIVERED
+  CANCELLED
+}
+
+model Role {
+  id          String   @id @default(cuid())
+  name        String   @unique
+  description String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  users       User[]
+}
+
+model User {
+  id           String    @id @default(cuid())
+  fullName     String
+  email        String    @unique
+  phone        String?
+  passwordHash String
+  isActive     Boolean   @default(true)
+  roleId       String
+  role         Role      @relation(fields: [roleId], references: [id], onDelete: Restrict)
+  cart         Cart?
+  orders       Order[]
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model Service {
+  id             String   @id @default(cuid())
+  name           String
+  shortDescription String?
+  description    String?
+  icon           String?
+  isFeatured     Boolean  @default(false)
+  seoTitle       String?
+  seoDescription String?
+  seoSlug        String   @unique
+  seoSchemaType  String?
+  seoCanonical   String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Category {
+  id             String    @id @default(cuid())
+  name           String
+  description    String?
+  seoTitle       String?
+  seoDescription String?
+  seoSlug        String    @unique
+  seoSchemaType  String?
+  seoCanonical   String?
+  products       Product[]
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+model Product {
+  id             String    @id @default(cuid())
+  name           String
+  sku            String    @unique
+  description    String?
+  imageUrl       String?
+  price          Decimal   @db.Decimal(10, 2)
+  stock          Int       @default(0)
+  isActive       Boolean   @default(true)
+  categoryId     String
+  category       Category  @relation(fields: [categoryId], references: [id], onDelete: Restrict)
+  cartItems      CartItem[]
+  orderItems     OrderItem[]
+  seoTitle       String?
+  seoDescription String?
+  seoSlug        String    @unique
+  seoSchemaType  String?
+  seoCanonical   String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+}
+
+model Cart {
+  id        String     @id @default(cuid())
+  userId    String     @unique
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  items     CartItem[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model CartItem {
+  id        String   @id @default(cuid())
+  cartId    String
+  productId String
+  quantity  Int      @default(1)
+  price     Decimal  @db.Decimal(10, 2)
+  cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Restrict)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([cartId, productId])
+}
+
+model Order {
+  id                 String      @id @default(cuid())
+  userId             String?
+  user               User?       @relation(fields: [userId], references: [id], onDelete: SetNull)
+  status             OrderStatus @default(PENDING)
+  customerName       String
+  customerPhone      String
+  customerAddress    String
+  coverageZoneId     String?
+  coverageZone       CoverageZone? @relation(fields: [coverageZoneId], references: [id], onDelete: SetNull)
+  subtotal           Decimal     @db.Decimal(10, 2)
+  shipping           Decimal     @db.Decimal(10, 2) @default(0)
+  total              Decimal     @db.Decimal(10, 2)
+  notes              String?
+  items              OrderItem[]
+  createdAt          DateTime    @default(now())
+  updatedAt          DateTime    @updatedAt
+}
+
+model OrderItem {
+  id          String   @id @default(cuid())
+  orderId     String
+  productId   String
+  quantity    Int
+  price       Decimal  @db.Decimal(10, 2)
+  productName String
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Restrict)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model CoverageZone {
+  id               String   @id @default(cuid())
+  name             String   @unique
+  city             String
+  isActive         Boolean  @default(true)
+  estimatedMinutes Int?
+  shippingCost     Decimal  @db.Decimal(10, 2) @default(0)
+  orders           Order[]
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+model SiteSettings {
+  id              Int      @id @default(1)
+  siteName        String   @default("GabyGas")
+  supportPhone    String?
+  salesPhone      String?
+  whatsappNumber  String?
+  logoUrl         String?
+  facebookUrl     String?
+  instagramUrl    String?
+  tiktokUrl       String?
+  youtubeUrl      String?
+  seoTitle        String?
+  seoDescription  String?
+  seoSlug         String?  @unique
+  seoSchemaType   String?
+  seoCanonical    String?
+  updatedAt       DateTime @updatedAt
+  createdAt       DateTime @default(now())
+}
+
+model Banner {
+  id             String   @id @default(cuid())
+  title          String
+  subtitle       String?
+  ctaLabel       String?
+  ctaUrl         String?
+  imageUrl       String?
+  isActive       Boolean  @default(true)
+  priority       Int      @default(0)
+  startsAt       DateTime?
+  endsAt         DateTime?
+  seoTitle       String?
+  seoDescription String?
+  seoSlug        String?  @unique
+  seoSchemaType  String?
+  seoCanonical   String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
+
+model Page {
+  id             String   @id @default(cuid())
+  key            String   @unique
+  title          String
+  seoTitle       String?
+  seoDescription String?
+  seoSlug        String   @unique
+  seoSchemaType  String?
+  seoCanonical   String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+}
