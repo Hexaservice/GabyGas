@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GabyGas | Instalación y mantenimiento de gas</title>
+    <meta
+      name="description"
+      content="GabyGas: instalación certificada, mantenimiento preventivo y atención de emergencias de gas en Medellín, Bello y Envigado."
+    />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <header class="hero" id="inicio">
+      <nav class="nav container">
+        <div class="brand">Gaby<span>Gas</span></div>
+        <div class="nav-links">
+          <a href="#servicios">Servicios</a>
+          <a href="#cobertura">Cobertura</a>
+          <a href="#contacto">Contacto</a>
+        </div>
+      </nav>
+
+      <div class="hero-content container">
+        <p class="tag">Especialistas en energía segura</p>
+        <h1>Tu aliado en instalación y mantenimiento de gas en el Valle de Aburrá</h1>
+        <p>
+          Diseñamos, instalamos y mantenemos sistemas de gas para hogares y empresas con técnicos certificados,
+          atención rápida y cumplimiento normativo.
+        </p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="#contacto">Solicitar visita técnica</a>
+          <a class="btn btn-outline" href="#servicios">Ver servicios</a>
+        </div>
+      </div>
+    </header>
+
+    <main>
+      <section class="section container" id="servicios">
+        <h2>Servicios destacados</h2>
+        <div class="grid cards-3">
+          <article class="card">
+            <h3>Instalación certificada</h3>
+            <p>Montaje y adecuación de redes residenciales y comerciales bajo estándares técnicos y de seguridad.</p>
+          </article>
+          <article class="card">
+            <h3>Mantenimiento preventivo</h3>
+            <p>Revisión periódica para evitar fallos, mejorar eficiencia y garantizar continuidad operativa.</p>
+          </article>
+          <article class="card">
+            <h3>Atención de emergencias</h3>
+            <p>Respuesta prioritaria para fugas, anomalías de presión y fallas críticas del sistema.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="section section-alt" id="cobertura">
+        <div class="container">
+          <h2>Cobertura principal</h2>
+          <div class="chips">
+            <span>Medellín</span>
+            <span>Bello</span>
+            <span>Envigado</span>
+            <span>Itagüí</span>
+            <span>Sabaneta</span>
+            <span>Copacabana</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="section container" id="contacto">
+        <div class="contact-wrap">
+          <div>
+            <h2>Agenda una visita</h2>
+            <p>Cuéntanos tu necesidad y te contactaremos con una propuesta técnica en menos de 24 horas hábiles.</p>
+          </div>
+          <a class="btn btn-primary" href="mailto:contacto@gabygas.com">contacto@gabygas.com</a>
+        </div>
+      </section>
+    </main>
+
+    <footer class="footer">
+      <div class="container">
+        <p>© <span id="year"></span> GabyGas · Instalación y mantenimiento de gas</p>
+      </div>
+    </footer>
+
+    <script>
+      document.getElementById('year').textContent = new Date().getFullYear();
+    </script>
+  </body>
+</html>
