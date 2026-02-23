@@ -1,5 +1,13 @@
+import type { Metadata } from 'next';
 import { prisma } from '@/lib/prisma';
 import { TiendaCatalogo } from '@/components/shop/TiendaCatalogo';
+import { buildPageMetadata } from '@/lib/seo';
+
+export const metadata: Metadata = buildPageMetadata({
+  title: 'Tienda de productos para gas',
+  description: 'Compra productos para instalación y mantenimiento de gas con disponibilidad y soporte técnico especializado.',
+  path: '/tienda',
+});
 
 export default async function TiendaPage() {
   const [products, services, categories] = await Promise.all([

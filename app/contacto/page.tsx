@@ -1,3 +1,13 @@
+import type { Metadata } from 'next';
+import { buildPageMetadata } from '@/lib/seo';
+
+export const metadata: Metadata = buildPageMetadata({
+  title: 'Contacto y cotización de servicio técnico de gas',
+  description: 'Solicita cotización para instalación, mantenimiento o urgencia de gas en Medellín, Bello y Envigado.',
+  path: '/contacto',
+  keywords: ['cotización instalación de gas', 'contacto técnico de gas Medellín'],
+});
+
 export default function ContactoPage() {
   return (
     <section className="max-w-2xl space-y-4">

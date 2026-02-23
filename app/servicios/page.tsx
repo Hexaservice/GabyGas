@@ -1,4 +1,14 @@
 import Link from 'next/link';
+import type { Metadata } from 'next';
+import { buildPageMetadata } from '@/lib/seo';
+
+export const metadata: Metadata = buildPageMetadata({
+  title: 'Servicios de instalación y mantenimiento de gas',
+  description:
+    'Conoce nuestros servicios de instalación certificada, mantenimiento preventivo y corrección de fugas para Medellín, Bello y Envigado.',
+  path: '/servicios',
+  keywords: ['instalación certificada de gas', 'mantenimiento preventivo de gas', 'corrección de fugas de gas'],
+});
 
 const services = [
   {

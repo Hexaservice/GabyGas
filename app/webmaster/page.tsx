@@ -7,12 +7,15 @@ export default async function WebmasterHomePage() {
   const session = await getServerSession(authOptions);
   const settings = await prisma.siteSettings.findUnique({ where: { id: 1 } });
 
-  const [banners, services, products, coverageZones, history] = await Promise.all([
+  const [banners, services, products, coverageZones, history, monthlyLeads, monthlyOrders, monthlyPaidOrders] = await Promise.all([
     prisma.banner.findMany({ orderBy: [{ priority: 'desc' }, { updatedAt: 'desc' }], take: 20 }),
     prisma.service.findMany({ orderBy: { updatedAt: 'desc' }, take: 20 }),
     prisma.product.findMany({ orderBy: { updatedAt: 'desc' }, take: 20 }),
     prisma.coverageZone.findMany({ orderBy: { updatedAt: 'desc' }, take: 20 }),
     prisma.auditLog.findMany({ where: { entity: 'site_settings', action: 'update_webmaster_content' }, orderBy: { createdAt: 'desc' }, take: 10 }),
+    prisma.serviceLead.count({ where: { createdAt: { gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) } } }),
+    prisma.order.count({ where: { createdAt: { gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) } } }),
+    prisma.order.count({ where: { status: 'PAID', createdAt: { gte: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000) } } }),
   ]);
 
   return (
@@ -68,6 +71,15 @@ export default async function WebmasterHomePage() {
           createdAt: item.createdAt.toISOString(),
           actorEmail: item.actorEmail,
         }))}
+        seoMetrics={{
+          monthlyLeads,
+          monthlyOrders,
+          monthlyPaidOrders,
+          leadToOrderRate: monthlyLeads > 0 ? Number(((monthlyOrders / monthlyLeads) * 100).toFixed(2)) : 0,
+          orderToPaidRate: monthlyOrders > 0 ? Number(((monthlyPaidOrders / monthlyOrders) * 100).toFixed(2)) : 0,
+          googleAnalyticsConfigured: Boolean(process.env.NEXT_PUBLIC_GA_MEASUREMENT_ID),
+          googleSearchConsoleConfigured: Boolean(process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION),
+        }}
       />
     </>
   );
