@@ -9,6 +9,9 @@ datasource db {
 
 enum OrderStatus {
   PENDING
+  PAYMENT_PENDING
+  PAID
+  PAYMENT_FAILED
   CONFIRMED
   DELIVERED
   CANCELLED
@@ -74,12 +77,14 @@ model Product {
   sku            String    @unique
   description    String?
   imageUrl       String?
+  brand          String?
   price          Decimal   @db.Decimal(10, 2)
   stock          Int       @default(0)
   isActive       Boolean   @default(true)
   categoryId     String
   category       Category  @relation(fields: [categoryId], references: [id], onDelete: Restrict)
   cartItems      CartItem[]
+  guestCartItems GuestCartItem[]
   orderItems     OrderItem[]
   seoTitle       String?
   seoDescription String?
@@ -88,6 +93,28 @@ model Product {
   seoCanonical   String?
   createdAt      DateTime  @default(now())
   updatedAt      DateTime  @updatedAt
+}
+
+model GuestCart {
+  id        String          @id @default(cuid())
+  sessionId String          @unique
+  items     GuestCartItem[]
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+}
+
+model GuestCartItem {
+  id          String    @id @default(cuid())
+  guestCartId String
+  productId   String
+  quantity    Int       @default(1)
+  price       Decimal   @db.Decimal(10, 2)
+  guestCart   GuestCart @relation(fields: [guestCartId], references: [id], onDelete: Cascade)
+  product     Product   @relation(fields: [productId], references: [id], onDelete: Restrict)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@unique([guestCartId, productId])
 }
 
 model Cart {
@@ -127,9 +154,24 @@ model Order {
   shipping           Decimal     @db.Decimal(10, 2) @default(0)
   total              Decimal     @db.Decimal(10, 2)
   notes              String?
+  paymentProvider    String?
+  paymentReference   String?
   items              OrderItem[]
   createdAt          DateTime    @default(now())
   updatedAt          DateTime    @updatedAt
+}
+
+model ServiceLead {
+  id            String   @id @default(cuid())
+  fullName      String
+  phone         String
+  email         String?
+  serviceType   String
+  address       String?
+  city          String?
+  notes         String?
+  preferredDate DateTime?
+  createdAt     DateTime @default(now())
 }
 
 model OrderItem {
