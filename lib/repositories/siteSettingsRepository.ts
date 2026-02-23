@@ -61,3 +61,113 @@ export async function updateBrandChannels(
 
   return updated;
 }
+
+export async function updateWebmasterContent(
+  payload: {
+    supportPhone?: string;
+    whatsappNumber?: string;
+    whatsappLink?: string;
+    whatsappPrefilledMessage?: string;
+    logoUrl?: string;
+    facebookUrl?: string;
+    instagramUrl?: string;
+    tiktokUrl?: string;
+    youtubeUrl?: string;
+  },
+  actor?: AuditActor,
+): Promise<SiteSettings> {
+  const before = await getSiteSettings();
+
+  const updated = await upsertSiteSettings({
+    supportPhone: payload.supportPhone?.trim() || null,
+    whatsappNumber: payload.whatsappNumber?.trim() || null,
+    logoUrl: payload.logoUrl?.trim() || null,
+    facebookUrl: payload.facebookUrl?.trim() || null,
+    instagramUrl: payload.instagramUrl?.trim() || null,
+    tiktokUrl: payload.tiktokUrl?.trim() || null,
+    youtubeUrl: payload.youtubeUrl?.trim() || null,
+    seoCanonical: payload.whatsappLink?.trim() || null,
+    seoDescription: payload.whatsappPrefilledMessage?.trim() || null,
+  });
+
+  await createAuditLog({
+    actor,
+    action: 'update_webmaster_content',
+    entity: 'site_settings',
+    entityId: String(SITE_SETTINGS_ID),
+    before: before
+      ? {
+          supportPhone: before.supportPhone,
+          whatsappNumber: before.whatsappNumber,
+          seoCanonical: before.seoCanonical,
+          seoDescription: before.seoDescription,
+          logoUrl: before.logoUrl,
+          facebookUrl: before.facebookUrl,
+          instagramUrl: before.instagramUrl,
+          tiktokUrl: before.tiktokUrl,
+          youtubeUrl: before.youtubeUrl,
+        }
+      : null,
+    after: {
+      supportPhone: updated.supportPhone,
+      whatsappNumber: updated.whatsappNumber,
+      seoCanonical: updated.seoCanonical,
+      seoDescription: updated.seoDescription,
+      logoUrl: updated.logoUrl,
+      facebookUrl: updated.facebookUrl,
+      instagramUrl: updated.instagramUrl,
+      tiktokUrl: updated.tiktokUrl,
+      youtubeUrl: updated.youtubeUrl,
+    },
+  });
+
+  return updated;
+}
+
+export async function revertWebmasterContent(auditLogId: string, actor?: AuditActor): Promise<SiteSettings> {
+  const log = await prisma.auditLog.findUnique({ where: { id: auditLogId } });
+
+  if (!log || log.entity !== 'site_settings' || log.action !== 'update_webmaster_content') {
+    throw new Error('No existe una versión válida para revertir.');
+  }
+
+  const before = (log.before ?? null) as {
+    supportPhone?: string | null;
+    whatsappNumber?: string | null;
+    seoCanonical?: string | null;
+    seoDescription?: string | null;
+    logoUrl?: string | null;
+    facebookUrl?: string | null;
+    instagramUrl?: string | null;
+    tiktokUrl?: string | null;
+    youtubeUrl?: string | null;
+  } | null;
+
+  if (!before) {
+    throw new Error('La versión seleccionada no contiene estado previo.');
+  }
+
+  const current = await getSiteSettings();
+  const restored = await upsertSiteSettings({
+    supportPhone: before.supportPhone ?? null,
+    whatsappNumber: before.whatsappNumber ?? null,
+    seoCanonical: before.seoCanonical ?? null,
+    seoDescription: before.seoDescription ?? null,
+    logoUrl: before.logoUrl ?? null,
+    facebookUrl: before.facebookUrl ?? null,
+    instagramUrl: before.instagramUrl ?? null,
+    tiktokUrl: before.tiktokUrl ?? null,
+    youtubeUrl: before.youtubeUrl ?? null,
+  });
+
+  await createAuditLog({
+    actor,
+    action: 'revert_webmaster_content',
+    entity: 'site_settings',
+    entityId: String(SITE_SETTINGS_ID),
+    before: current,
+    after: restored,
+  });
+
+  return restored;
+}
