@@ -1,35 +1,39 @@
-import type { Config } from "tailwindcss";
+import type { Config } from 'tailwindcss';
 
 const config: Config = {
-  content: ["./app/**/*.{js,ts,jsx,tsx,mdx}", "./components/**/*.{js,ts,jsx,tsx,mdx}"],
+  content: ['./app/**/*.{js,ts,jsx,tsx,mdx}', './components/**/*.{js,ts,jsx,tsx,mdx}'],
   theme: {
     screens: {
-      sm: "480px",
-      md: "768px",
-      lg: "1024px",
-      xl: "1280px"
+      sm: '480px',
+      md: '768px',
+      lg: '1024px',
+      xl: '1280px',
     },
     extend: {
       colors: {
         brand: {
-          50: "#eef6ff",
-          100: "#d9eaff",
-          500: "#005fcc",
-          600: "#004ea8",
-          900: "#04254c"
+          50: '#FFF8E8',
+          100: '#FDE6B1',
+          200: '#FCD486',
+          300: '#F9BE56',
+          400: '#F5A524',
+          500: '#EC8B00',
+          600: '#CC7300',
+          700: '#9E5800',
+          900: '#24170A',
         },
-        accent: "#22c55e",
-        ink: "#0f172a"
+        accent: '#F59E0B',
+        ink: '#0B0D11',
       },
       fontFamily: {
-        sans: ["Inter", "ui-sans-serif", "system-ui", "sans-serif"]
+        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
       },
       boxShadow: {
-        soft: "0 8px 24px rgba(15, 23, 42, 0.08)"
-      }
-    }
+        soft: '0 12px 30px rgba(0, 0, 0, 0.35)',
+      },
+    },
   },
-  plugins: []
+  plugins: [],
 };
 
 export default config;
