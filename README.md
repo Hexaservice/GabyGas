@@ -70,3 +70,20 @@ npm run prisma:migrate
 npm run prisma:deploy
 npm run prisma:seed
 ```
+
+## SEO local implementado
+
+- Metadata por ruta con `title`, `description`, Open Graph, Twitter Cards y canonical.
+- `robots.txt` y `sitemap.xml` generados con App Router (`app/robots.ts`, `app/sitemap.ts`).
+- Estrategia de keywords locales para Valle de Aburrá y landings por municipio (`/cobertura/medellin`, `/cobertura/bello`, `/cobertura/envigado`).
+- Schema.org incluido: `LocalBusiness`, `Service`, `Product` y `FAQPage`.
+- Integración de Google Analytics (`NEXT_PUBLIC_GA_MEASUREMENT_ID`) y verificación Search Console (`NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION`).
+- Dashboard SEO-conversión en `/webmaster` (leads/órdenes, tasas y estado de integraciones).
+
+### Variables de entorno SEO sugeridas
+
+```bash
+NEXT_PUBLIC_SITE_URL="https://tudominio.com"
+NEXT_PUBLIC_GA_MEASUREMENT_ID="G-XXXXXXXXXX"
+NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION="codigo-search-console"
+```

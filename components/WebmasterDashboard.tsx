@@ -36,6 +36,17 @@ type AuditItem = {
   actorEmail: string | null;
 };
 
+
+type SeoMetrics = {
+  monthlyLeads: number;
+  monthlyOrders: number;
+  monthlyPaidOrders: number;
+  leadToOrderRate: number;
+  orderToPaidRate: number;
+  googleAnalyticsConfigured: boolean;
+  googleSearchConsoleConfigured: boolean;
+};
+
 type Props = {
   initialSettings: SiteSettingsData;
   banners: BannerItem[];
@@ -43,6 +54,7 @@ type Props = {
   products: ProductItem[];
   coverageZones: CoverageItem[];
   history: AuditItem[];
+  seoMetrics: SeoMetrics;
 };
 
 const ACCEPTED_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
@@ -88,7 +100,7 @@ async function optimizeImage(file: File): Promise<File> {
   return new File([blob], `${file.name.replace(/\.[^/.]+$/, '')}.webp`, { type: 'image/webp' });
 }
 
-export function WebmasterDashboard({ initialSettings, banners, services, products, coverageZones, history }: Props) {
+export function WebmasterDashboard({ initialSettings, banners, services, products, coverageZones, history, seoMetrics }: Props) {
   const [draft, setDraft] = useState(initialSettings);
   const [selectedBannerId, setSelectedBannerId] = useState<string>(banners[0]?.id ?? '');
   const [saving, setSaving] = useState(false);
@@ -242,7 +254,7 @@ export function WebmasterDashboard({ initialSettings, banners, services, product
           <h2 className="text-lg font-semibold">Módulo: Logo</h2>
           <input type="file" accept="image/*" onChange={(event) => handleImageInput(event, 'logo')} />
           <input className="field" value={draft.logoUrl} onChange={(event) => setField('logoUrl', event.target.value)} placeholder="URL del logo" />
-          {draft.logoUrl ? <img src={previewImageUrl || draft.logoUrl} alt="Logo" className="h-20 rounded-md object-contain" /> : null}
+          {draft.logoUrl ? <img src={previewImageUrl || draft.logoUrl} alt="Logo" loading="lazy" decoding="async" className="h-20 rounded-md object-contain" /> : null}
         </article>
 
         <article className="card space-y-3">
@@ -303,7 +315,7 @@ export function WebmasterDashboard({ initialSettings, banners, services, product
             <input className="field" value={bannerForm.ctaUrl} onChange={(event) => setBannerForm((prev) => ({ ...prev, ctaUrl: event.target.value }))} placeholder="URL botón" />
           </div>
           <input type="file" accept="image/*" onChange={(event) => handleImageInput(event, 'banner')} />
-          {bannerForm.imageUrl ? <img src={bannerForm.imageUrl} alt="Banner" className="h-36 w-full rounded-md object-cover" /> : null}
+          {bannerForm.imageUrl ? <img src={bannerForm.imageUrl} alt="Banner" loading="lazy" decoding="async" className="h-36 w-full rounded-md object-cover" /> : null}
           <button className="btn-outline" type="button" onClick={saveBanner} disabled={saving || !selectedBanner}>Guardar banner</button>
         </article>
 
@@ -330,6 +342,24 @@ export function WebmasterDashboard({ initialSettings, banners, services, product
           </div>
         </div>
         <button className="btn-primary" type="button" onClick={publishChanges} disabled={saving}>Publicar cambios</button>
+      </article>
+
+      <article className="card space-y-3">
+        <h2 className="text-lg font-semibold">Dashboard SEO y conversión (últimos 30 días)</h2>
+        <div className="grid gap-3 md:grid-cols-3">
+          <div className="rounded-md border border-slate-200 p-3 text-sm"><strong>Leads:</strong> {seoMetrics.monthlyLeads}</div>
+          <div className="rounded-md border border-slate-200 p-3 text-sm"><strong>Órdenes:</strong> {seoMetrics.monthlyOrders}</div>
+          <div className="rounded-md border border-slate-200 p-3 text-sm"><strong>Órdenes pagadas:</strong> {seoMetrics.monthlyPaidOrders}</div>
+        </div>
+        <div className="grid gap-3 md:grid-cols-2">
+          <p className="text-sm text-slate-700">Tasa lead → orden: <strong>{seoMetrics.leadToOrderRate}%</strong></p>
+          <p className="text-sm text-slate-700">Tasa orden → pago: <strong>{seoMetrics.orderToPaidRate}%</strong></p>
+        </div>
+        <div className="rounded-md bg-slate-50 p-3 text-sm text-slate-700">
+          <p>Google Analytics: <strong>{seoMetrics.googleAnalyticsConfigured ? 'Configurado' : 'Pendiente'}</strong></p>
+          <p>Google Search Console: <strong>{seoMetrics.googleSearchConsoleConfigured ? 'Configurado' : 'Pendiente'}</strong></p>
+          <p className="mt-2">Para activar, define <code>NEXT_PUBLIC_GA_MEASUREMENT_ID</code> y <code>NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION</code> en el entorno.</p>
+        </div>
       </article>
 
       <article className="card space-y-2">

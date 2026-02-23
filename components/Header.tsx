@@ -4,6 +4,7 @@ const links = [
   { href: "/", label: "Inicio" },
   { href: "/nosotros", label: "Nosotros" },
   { href: "/servicios", label: "Servicios" },
+  { href: "/cobertura/medellin", label: "Cobertura" },
   { href: "/tienda", label: "Tienda" },
   { href: "/contacto", label: "Contacto" },
   { href: "/buscar", label: "Buscar" },
