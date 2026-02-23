@@ -105,6 +105,17 @@ Pasos para activarlo:
 > Importante: GitHub Pages solo sirve contenido estático.
 > La app completa (Next.js + NextAuth + Prisma + APIs) necesita servidor Node.js y base de datos, por lo que para producción completa se recomienda Vercel/Render/Railway.
 
+### ¿Por qué no veo cambios de UI o nuevas funcionalidades en la web publicada?
+
+Si estás entrando a la URL de **GitHub Pages**, solo verás el contenido de `docs-site/index.html`.
+Los cambios de la app real (App Router, API routes, auth, checkout, etc.) no se reflejan ahí porque GitHub Pages no ejecuta Next.js del lado servidor.
+
+Para ver tus cambios reales:
+
+1. Ejecuta local: `npm install && npm run dev`.
+2. Abre `http://localhost:3000`.
+3. Para producción completa, despliega en Vercel/Render/Railway.
+
 ## Gobernanza de entrega
 
 - Convención de ramas: `feature/*`.
