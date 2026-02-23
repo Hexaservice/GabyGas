@@ -65,6 +65,8 @@ npm install
 npm run dev
 npm run lint
 npm run build
+npm run type-check
+npm run test:key
 npm run prisma:generate
 npm run prisma:migrate
 npm run prisma:deploy
@@ -87,3 +89,17 @@ NEXT_PUBLIC_SITE_URL="https://tudominio.com"
 NEXT_PUBLIC_GA_MEASUREMENT_ID="G-XXXXXXXXXX"
 NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION="codigo-search-console"
 ```
+
+
+## Gobernanza de entrega
+
+- Convención de ramas: `feature/*`.
+- Plantilla de PR con checklist de UX, SEO, seguridad, responsive y accesibilidad.
+- CI con checks obligatorios: lint, type-check, build y pruebas clave.
+- Proceso de releases quincenales y backlog priorizado en `docs/`.
+
+Referencias:
+- `docs/engineering-workflow.md`
+- `docs/backlog-priorizado.md`
+- `.github/PROJECT_BOARD.md`
+- `CHANGELOG.md`

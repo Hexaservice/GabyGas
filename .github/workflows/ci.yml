@@ -1,13 +1,16 @@
 name: CI
 
 on:
-  push:
-    branches: ["**"]
   pull_request:
+    branches: ["main"]
+  push:
+    branches: ["main"]
 
 jobs:
-  lint-and-build:
+  quality-gates:
+    name: Lint, Type-check, Build y Pruebas clave
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -16,15 +19,19 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
+          cache: npm
 
       - name: Install dependencies
-        run: npm install
-
-      - name: Generate Prisma Client
-        run: npm run prisma:generate
+        run: npm ci
 
       - name: Lint
         run: npm run lint
 
+      - name: Type-check
+        run: npm run type-check
+
       - name: Build
         run: npm run build
+
+      - name: Pruebas clave
+        run: npm run test:key
