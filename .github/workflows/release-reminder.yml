@@ -1,0 +1,15 @@
+name: Release Reminder
+
+on:
+  schedule:
+    - cron: '0 14 */14 * *'
+  workflow_dispatch:
+
+jobs:
+  reminder:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Mensaje de referencia para release quincenal
+        run: |
+          echo "Recordatorio: preparar release quincenal con CHANGELOG y métricas por PR."
+          echo "Pasos: consolidar PRs, actualizar CHANGELOG.md y publicar tag."

@@ -10,7 +10,9 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:deploy": "prisma migrate deploy",
-    "prisma:seed": "prisma db seed"
+    "prisma:seed": "prisma db seed",
+    "type-check": "tsc --noEmit",
+    "test:key": "node scripts/key-checks.js"
   },
   "dependencies": {
     "next": "14.2.32",
